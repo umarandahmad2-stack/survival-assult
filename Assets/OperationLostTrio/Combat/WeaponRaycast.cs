@@ -6,7 +6,7 @@ namespace OperationLostTrio {
         public int AmmoInMagazine { get; private set; } float nextShotTime; bool reloading;
         void Awake() { AmmoInMagazine = magazineSize; }
         void Update() {
-            if (Input.GetKeyDown(KeyCode.R)) StartCoroutine(Reload());
+            if (Input.GetKeyDown(KeyCode.R)) ReloadNow();
             if (Input.GetMouseButton(0) && Time.time >= nextShotTime && !reloading) { nextShotTime = Time.time + 1f / Mathf.Max(0.1f, fireRate); Shoot(); }
         }
         void Shoot() {
@@ -15,8 +15,9 @@ namespace OperationLostTrio {
                 Health target = hit.collider.GetComponentInParent<Health>(); if (target != null && target.gameObject != gameObject) target.Damage(damage);
             }
         }
+        public void ReloadNow() { if (!reloading) StartCoroutine(Reload()); }
         IEnumerator Reload() {
-            if (reloading || AmmoInMagazine == magazineSize || reserveAmmo <= 0) yield break; reloading = true; yield return new WaitForSeconds(reloadSeconds);
+            if (AmmoInMagazine == magazineSize || reserveAmmo <= 0) yield break; reloading = true; yield return new WaitForSeconds(reloadSeconds);
             int loaded = Mathf.Min(magazineSize - AmmoInMagazine, reserveAmmo); AmmoInMagazine += loaded; reserveAmmo -= loaded; reloading = false;
         }
         public void AddAmmo(int amount) { reserveAmmo += Mathf.Max(0, amount); }
