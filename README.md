@@ -11,6 +11,10 @@ A Unity 3D tactical survival/rescue prototype with a gritty urban district, weap
 - Basic HUD and rescue counter
 - **Procedural urban map builder** with generated road markings, building shells, window panels, rooftops, rubble, cover, checkpoint props, grunge, brick, and ground textures
 - **Adaptive difficulty** that increases enemy damage and detection range as a run continues
+- **Main menu / pause flow** with Start, Resume, Return to Title, and Quit hooks for Unity UI buttons
+- **Enemy wave spawner** with increasing wave sizes and configurable spawn points
+- **Ammo pickup props** and optional magazine refill
+- **Mission objective tracker** and a polished high-contrast tactical HUD with health bar, ammo, rescue count, wave number, and objective text
 
 ## Requirements
 - Unity 2022.3 LTS or newer recommended
@@ -25,7 +29,10 @@ A Unity 3D tactical survival/rescue prototype with a gritty urban district, weap
 5. Create enemies with a `NavMeshAgent`, `EnemyPatrol`, and `Health`; assign the player transform as their target. Bake a NavMesh over the walkable level.
 6. Add `OperationGameManager` to an empty GameObject. Place three friend NPCs with colliders and `RescueObjective` components, then assign the manager.
 7. Add `LootCrate` to crates with colliders. Add `SurvivalHUD` and assign the player's health, weapon, and game manager.
-8. Optionally add `AdaptiveDifficulty` to a manager object, assign the player and enemies, and tune the ramp interval and maximum damage increase.
+8. Add `SurvivalMainMenu` and wire Unity UI buttons to `StartMission`, `ResumeGame`, `ReturnToTitle`, and `QuitGame`.
+9. For waves, add `EnemyWaveSpawner`, assign an enemy prefab with `Health` and `EnemyPatrol`, set spawn point transforms, and call `StartWaves` from a UI button or another script.
+10. Add `WeaponPickup` to ammo pickup props. Add `MissionObjective` and assign it to `SurvivalHUD` to show the active objective.
+11. Optionally add `AdaptiveDifficulty` to a manager object, assign the player and enemies, and tune the ramp interval and maximum damage increase.
 
 ## Controls
 - WASD: move
