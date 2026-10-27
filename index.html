@@ -14,8 +14,11 @@
 <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
 <script>
 (()=>{const $=id=>document.getElementById(id);if(!window.THREE){$('card').innerHTML='<h1>Could not load 3D engine</h1><p>Refresh with an internet connection; this prototype loads Three.js from a CDN.</p>';return}
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x9aa6a6);scene.fog=new THREE.FogExp2(0x9aa6a6,.009);
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x667782);scene.fog=new THREE.FogExp2(0x667782,.0075);
 const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.1,300);camera.position.set(0,2,10);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.05;document.body.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xb8d3e0,0x252a24,1.55));const sun=new THREE.DirectionalLight(0xffd0a0,3.1);sun.position.set(-30,50,25);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);sun.shadow.camera.left=-65;sun.shadow.camera.right=65;sun.shadow.camera.top=65;sun.shadow.camera.bottom=-65;sun.shadow.bias=-0.00025;scene.add(sun);const fillLight=new THREE.DirectionalLight(0x7ba6cb,.75);fillLight.position.set(25,12,-30);scene.add(fillLight);
+const mat=(color,roughness=0.9,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
  // First-person survivor arms and a detailed rifle; deliberately no inventory screen.
  const viewGun=new THREE.Group();camera.add(viewGun);
  const sleeve=mat(0x293d3c),glove=mat(0x3b443e),rifleMat=mat(0x20282a,.35,.55),rifleEdge=mat(0x59615f,.45,.65);
@@ -30,9 +33,7 @@ const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.1,300);camer
  gunPart(new THREE.BoxGeometry(.12,.22,.15),rifleMat,.0,-.4,-.69);
  gunPart(new THREE.BoxGeometry(.05,.05,.18),rifleEdge,.0,-.105,-1.12);
  scene.add(camera);
-const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.15;document.body.appendChild(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0xc5d9e0,0x353a2c,2));const sun=new THREE.DirectionalLight(0xffd5a1,3);sun.position.set(-30,50,25);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun);
-const mat=(color,roughness=0.9,metalness=0)=>new THREE.MeshStandardMaterial({color,roughness,metalness});
+
 const asphalt=mat(0x30383b), concrete=mat(0x777b77), brick=mat(0x714a3d), dark=mat(0x17272e,.3,.2), glass=mat(0x183c48,.25,.5), orange=mat(0xff7825,.5), grass=mat(0x555c43), steel=mat(0x414a4d,.5,.5);
 function box(x,y,z,sx,sy,sz,m,collide=true){const o=new THREE.Mesh(new THREE.BoxGeometry(sx,sy,sz),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);if(collide)solids.push({x,z,hx:sx/2,hz:sz/2,top:sy});return o}
 const solids=[];box(0,-.6,0,150,1,150,grass,false);box(0,-.02,0,12,.12,150,asphalt,false);box(-8,-.02,0,4,.2,150,concrete,false);box(8,-.02,0,4,.2,150,concrete,false);
